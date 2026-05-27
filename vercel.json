@@ -1,0 +1,30 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "next build",
+  "outputDirectory": ".next",
+  "installCommand": "npm install",
+  "env": {
+    "NEXT_PUBLIC_SUPABASE_URL": "@supabase-url",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@supabase-anon-key",
+    "SUPABASE_SERVICE_ROLE_KEY": "@supabase-service-role-key",
+    "STRIPE_SECRET_KEY": "@stripe-secret-key",
+    "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "@stripe-publishable-key",
+    "STRIPE_WEBHOOK_SECRET": "@stripe-webhook-secret",
+    "STRIPE_PRICE_STARTER_MONTHLY": "@stripe-price-starter-monthly",
+    "STRIPE_PRICE_STARTER_ANNUAL": "@stripe-price-starter-annual",
+    "STRIPE_PRICE_PRO_MONTHLY": "@stripe-price-pro-monthly",
+    "STRIPE_PRICE_PRO_ANNUAL": "@stripe-price-pro-annual",
+    "RESEND_API_KEY": "@resend-api-key",
+    "EMAIL_FROM": "@email-from",
+    "NEXT_PUBLIC_APP_URL": "@app-url"
+  },
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" }
+      ]
+    }
+  ]
+}
