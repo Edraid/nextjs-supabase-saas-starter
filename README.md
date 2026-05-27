@@ -59,7 +59,7 @@ Vercel                   →  Deployment
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/nextjs-supabase-saas-starter
+git clone https://github.com/Edraid/nextjs-supabase-saas-starter
 cd nextjs-supabase-saas-starter
 npm install
 ```
