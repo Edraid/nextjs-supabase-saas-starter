@@ -1,12 +1,15 @@
 # Next.js + Supabase SaaS Starter Kit
 
-> Production-ready SaaS boilerplate — auth, multi-tenant orgs, Stripe billing, transactional emails, and 57 files ready to deploy. Ship in 15 minutes, not 4 weeks.
+> Production-ready SaaS boilerplate — auth, multi-tenant orgs, Stripe billing, transactional emails, and 57 files ready to deploy. Ship in days, not weeks.
 
-![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)
-![Supabase](https://img.shields.io/badge/Supabase-ready-3ECF8E?logo=supabase)
-![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript)
-![Stripe](https://img.shields.io/badge/Stripe-billing-635BFF?logo=stripe)
-![License](https://img.shields.io/badge/license-MIT-blue)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)](https://nextjs.org)
+[![Supabase](https://img.shields.io/badge/Supabase-ready-3ECF8E?logo=supabase)](https://supabase.com)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript)](https://www.typescriptlang.org)
+[![Stripe](https://img.shields.io/badge/Stripe-billing-635BFF?logo=stripe)](https://stripe.com)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/Edraid/nextjs-supabase-saas-starter?style=flat)](https://github.com/Edraid/nextjs-supabase-saas-starter/stargazers)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Edraid/nextjs-supabase-saas-starter)
 
 ---
 
@@ -27,16 +30,16 @@ That's **4 weeks before you write a single line of your actual product**. This k
 
 | Feature | Details |
 |---------|---------|
-| **Auth** | Email/password + Google OAuth + forgot/reset. `@supabase/ssr` compatible |
+| **Auth** | Email/password + Google OAuth + forgot/reset. `@supabase/ssr` — uses `getUser()`, not `getSession()` |
 | **Multi-tenant orgs** | Owner, admin, member, viewer — enforced at DB level with RLS |
-| **Team invitations** | Token-based, email delivery, role assignment |
-| **Stripe billing** | Checkout + Billing Portal + 4 webhooks handled |
+| **Team invitations** | Token-based, email delivery, role assignment, pending invites list |
+| **Stripe billing** | Checkout + Billing Portal + 4 webhooks handled. Subscription status never drifts. |
 | **Transactional emails** | Welcome, invite, invoice — React Email + Resend |
 | **Notifications** | Real-time bell, unread badge, mark-as-read |
-| **API key management** | SHA-256 hashed, revocable, org-scoped |
-| **Audit log** | Append-only, 12 event types, admin-only view |
+| **API key management** | SHA-256 hashed, revocable, org-scoped, reveal-once on creation |
+| **Audit log** | Append-only, 12 event types, admin-only view, SECURITY DEFINER insert |
 | **Dashboard** | Sidebar, stats, settings, analytics placeholder |
-| **TypeScript** | Strict mode, full DB types, 3 hooks |
+| **TypeScript** | Strict mode, full DB types, 3 hooks (useUser, useSubscription, useOrg) |
 
 ---
 
@@ -191,8 +194,29 @@ export function Component() {
 
 ---
 
+## RLS design
+
+The hardest part of multi-tenant SaaS on Supabase is avoiding infinite recursion in RLS policies. This kit uses a helper function pattern:
+
+```sql
+-- Instead of joining organization_members inside each policy (causes recursion),
+-- a SECURITY DEFINER function caches the lookup:
+CREATE FUNCTION auth.user_org_role(org_id UUID)
+RETURNS TEXT AS $$
+  SELECT role FROM organization_members
+  WHERE user_id = auth.uid() AND org_id = $1
+$$ LANGUAGE sql STABLE SECURITY DEFINER;
+```
+
+Every table policy calls `auth.user_org_role()` instead of querying `organization_members` directly. See `supabase/migrations/001_initial_schema.sql` for the full implementation.
+
+---
+
 ## Deploy to Vercel
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Edraid/nextjs-supabase-saas-starter)
+
+Or via CLI:
 ```bash
 vercel
 ```
@@ -215,6 +239,18 @@ npm run db:types:remote   # remote project
 
 ---
 
+## Customization
+
+See [CUSTOMIZATION.md](CUSTOMIZATION.md) for the 12 most common modifications (add a new page, remove Stripe, swap Resend for another provider, etc.).
+
+---
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for version history.
+
+---
+
 ## Contributing
 
 PRs welcome. Please open an issue first for major changes.
@@ -223,13 +259,13 @@ PRs welcome. Please open an issue first for major changes.
 
 ## License
 
-MIT — use in personal and commercial projects.
+MIT — use in personal and commercial projects. See [LICENSE](LICENSE).
 
 ---
 
 ## Support
 
-If this saved you time, consider:
-- ⭐ Starring this repo
-- 🐦 Following [@Edraid1](https://twitter.com/Edraid1) for more Supabase + Next.js content
-- 💬 Opening an issue if something doesn't work
+If this saved you time:
+- ⭐ Star this repo — it helps others find it
+- 🐦 Follow [@Edraid1](https://twitter.com/Edraid1) for more Supabase + Next.js content
+- 💬 Open an issue if something doesn't work
