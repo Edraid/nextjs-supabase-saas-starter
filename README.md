@@ -268,6 +268,17 @@ MIT — use in personal and commercial projects. See [LICENSE](LICENSE).
 
 ---
 
+## Go deeper
+
+This starter is free and MIT-licensed. If you want to understand *why* every RLS policy is written the way it is:
+
+- **[Supabase RLS & Schema Pack](https://edraid-dev.lemonsqueezy.com?utm_source=github&utm_medium=readme&utm_campaign=launch)** ($29) — 40+ production RLS policies in 18 categories with a debugging cheatsheet. This repo implements the exact patterns documented there.
+- **[The Complete Bundle](https://edraid-dev.lemonsqueezy.com?utm_source=github&utm_medium=readme&utm_campaign=launch)** ($99) — the pack + the kit with extras, 21% off.
+
+Both come with a 30-day no-questions refund.
+
+---
+
 ## Support
 
 If this saved you time:
